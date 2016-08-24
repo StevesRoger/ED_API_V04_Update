@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+ <mapper namespace="org.expertdatabase.repositories.ExpertRepository">    
+  
+	<resultMap id="ResultExperts" type="org.expertdatabase.entities.Expert">        
+ 		<result property="expert_id" column="expert_id"/>  
+ 		
+ 		<association property="address" column="expert_id" 
+ 					javaType="org.expertdatabase.entities.ExpertAddress"        
+ 					select="selectExpertAddress" />  
+ 					
+ 		<association property="location" column="location_id" 
+ 					javaType="org.expertdatabase.entities.Location"        
+ 					select="selectExpertLocation" />  
+ 					
+ 		<collection property="contacts" column="expert_id" javaType="ArrayList"        
+     				ofType="org.expertdatabase.entities.ExpertContact" 
+     				select="selectExpertContact"/>
+     				
+     	<collection property="experiences" column="expert_id" javaType="ArrayList"        
+     				ofType="org.expertdatabase.entities.ExpertExperience" 
+     				select="selectExpertExperience"/>
+     				
+     	<collection property="educations" column="expert_id" javaType="ArrayList"        
+     				ofType="org.expertdatabase.entities.ExpertEducation"
+     				select="selectExpertEducation"/>
+     				
+     	<collection property="documents" column="expert_id" javaType="ArrayList"        
+     				ofType="org.expertdatabase.entities.ExpertDocument"
+     				select="selectExpertDocument"/>	
+     					
+     	<collection property="skills" column="expert_id" javaType="ArrayList"        
+     				ofType="org.expertdatabase.entities.Skill"
+     				select="selectExpertSkill"/>
+     					
+     	<collection property="positions" column="expert_id" javaType="ArrayList"        
+     				ofType="org.expertdatabase.entities.Position"
+     				select="selectExpertPosition"/>
+     					
+     	<collection property="languages" column="expert_id" javaType="ArrayList"        
+     				ofType="org.expertdatabase.entities.Language"
+     				select="selectExpertLanguage"/>	
+   </resultMap>     
+   
+   <select id="getAllExpertWithLimit" resultMap="ResultExperts" parameterType="org.expertdatabase.utilities.Pagination">
+   	SELECT date_part('year', AGE(expert_date_of_birth)) AS expert_age, * 
+   	FROM exp_expert_info WHERE expert_state IS NOT FALSE ORDER BY expert_id offset #{offset} limit #{limit}
+   </select>
+   
+    <select id="getAllExperts" resultMap="ResultExperts">
+   	SELECT date_part('year', AGE(expert_date_of_birth)) AS expert_age, * 
+   	FROM exp_expert_info ORDER BY expert_id
+   </select>
+   
+   <select id="countExpert" resultType="int">
+   	SELECT COUNT(expert_id) FROM exp_expert_info
+   </select>
+   
+   <select id="selectExpertAddress" resultType="org.expertdatabase.entities.ExpertAddress" 
+   			parameterType="int">
+   	SELECT * FROM exp_expert_permanent_address WHERE expert_id=#{expert_id}
+   </select>
+   
+   <select id="selectExpertContact" resultType="org.expertdatabase.entities.ExpertContact" 
+   			parameterType="int">
+   	SELECT * FROM exp_expert_contact WHERE expert_id=#{expert_id}
+   </select>
+   
+   <select id="selectExpertExperience" resultType="org.expertdatabase.entities.ExpertExperience" 
+   			parameterType="int">
+   	SELECT * FROM exp_expert_experience WHERE expert_id=#{expert_id}
+   </select>
+   
+   <select id="selectExpertEducation" resultType="org.expertdatabase.entities.ExpertEducation" 
+   			parameterType="int">
+   	SELECT * FROM exp_expert_education WHERE expert_id=#{expert_id}
+   </select>
+   
+   <select id="selectExpertDocument" resultType="org.expertdatabase.entities.ExpertDocument" 
+   			parameterType="int">
+   	SELECT * FROM exp_expert_document WHERE expert_id=#{expert_id}
+   </select>
+   
+   <select id="selectExpertLocation" resultType="org.expertdatabase.entities.Location">
+   	SELECT * FROM exp_locations WHERE location_id=#{location_id} AND location_state IS NOT FALSE
+   </select>
+   
+    <select id="selectLocationByExpertId" resultType="org.expertdatabase.entities.Location"
+   		parameterType="Integer">
+   		SELECT exp_expert_info.location_id,
+				location_status,
+				location_description
+		FROM exp_expert_info 
+		INNER JOIN exp_locations
+		ON exp_expert_info.location_id=exp_locations.location_id
+		WHERE expert_id=#{expertId} AND location_state IS NOT FALSE 
+   </select>
+   
+   <select id="selectExpertSkill" resultType="org.expertdatabase.entities.Skill"
+   			parameterType="int">
+   	SELECT exp_skills.skill_id,skill_status,level_status,level_range 
+			FROM exp_expert_skill
+			INNER JOIN exp_skills ON exp_expert_skill.skill_id=exp_skills.skill_id
+			INNER JOIN exp_levels ON exp_expert_skill.level_id=exp_levels.level_id 
+			WHERE exp_expert_skill.expert_id=#{expert_id}				
+   </select>
+   
+   <select id="selectExpertPosition" resultType="org.expertdatabase.entities.Position" 
+   			parameterType="int">
+   	SELECT exp_positions.position_id,position_status FROM exp_expert_position
+			INNER JOIN exp_positions
+			ON exp_expert_position.position_id=exp_positions.position_id
+			WHERE exp_expert_position.expert_id=#{expert_id};
+   </select>
+   
+   <select id="selectExpertLanguage" resultType="org.expertdatabase.entities.Language"
+   			parameterType="int">
+   			SELECT exp_languages.language_id,language_status,level_status 
+			FROM exp_expert_language 
+			INNER JOIN exp_languages 
+			ON exp_expert_language.language_id=exp_languages.language_id 
+			INNER JOIN exp_levels 
+			ON exp_expert_language.level_id=exp_levels.level_id 
+			WHERE exp_expert_language.expert_id=#{expert_id}
+   </select>
+  
+   <select id="selectAllPositions" resultType="org.expertdatabase.entities.Position">
+   		SELECT * FROM exp_positions ORDER BY position_id
+   </select>
+   
+   <select id="selectAllLocations" resultType="org.expertdatabase.entities.Location">
+   		SELECT * FROM exp_locations WHERE location_state IS NOT FALSE ORDER BY location_id
+   </select>
+      
+   <select id="selectAllLevels" resultType="org.expertdatabase.entities.Level">
+   		SELECT * FROM exp_levels ORDER BY level_id
+   </select>
+   
+   <select id="selectAllLanguages" resultType="org.expertdatabase.entities.Language$TempLanguage">
+   		SELECT * FROM exp_languages ORDER BY language_id
+   </select>
+   
+   <resultMap id="ResultSkillCategories" type="org.expertdatabase.entities.SkillCategory">
+   		<result property="category_id" column="category_id"/>
+   		<collection property="skills" column="category_id" javaType="ArrayList"        
+     				ofType="org.expertdatabase.entities.Skill$TempSkill"
+     				select="selectSkillByCategoryIdCount"/>	
+   </resultMap>
+   <select id="selectAllSkillCategories" resultMap="ResultSkillCategories">
+ 	 	SELECT * FROM 
+			(SELECT exp_skill_category.*,
+			count(exp_skill_category.category_id) AS counts
+			FROM exp_skill_category
+			INNER JOIN exp_skills 
+			ON exp_skill_category.category_id=exp_skills.category_id
+			GROUP BY exp_skill_category.category_id)AS temps
+		WHERE temps.counts>0
+   </select>
+   
+   <resultMap id="ResultSkill" type="org.expertdatabase.entities.Skill$TempSkill">
+   		<result property="count" column="counts"/>
+   </resultMap>
+   <select id="selectSkillByCategoryIdCount" resultMap="ResultSkill" parameterType="int">
+	 	SELECT * FROM 
+			(SELECT exp_skills.*,expert_state,
+			COUNT(exp_expert_info.expert_id) AS counts 
+			FROM exp_expert_skill 
+			FULL JOIN exp_skills
+			ON exp_expert_skill.skill_id=exp_skills.skill_id 
+			FULL JOIN exp_expert_info
+			ON exp_expert_skill.expert_id=exp_expert_info.expert_id
+			GROUP BY (exp_skills.skill_id,expert_state))AS temps 
+			WHERE category_id=#{categoryId} AND expert_state IS NOT FALSE
+   </select> 
+   
+   <select id="selectAllCategories" resultType="org.expertdatabase.entities.SkillCategory$TempCategory">
+   		SELECT exp_skill_category.*,
+				count(skill_id) AS COUNTS
+			FROM exp_skill_category
+			LEFT JOIN exp_skills
+			ON exp_skill_category.category_id=exp_skills.category_id
+			GROUP BY (exp_skill_category.category_id)
+			ORDER BY exp_skill_category.category_id
+   </select>
+   
+   <select id="selectSkillByCategoryId" parameterType="Integer" 
+   	resultType="org.expertdatabase.entities.Skill$TempInnerSkill">
+   		SELECT * FROM exp_skills WHERE category_id=#{categoryId} ORDER BY skill_id
+   </select>
+   
+   <select id="selectAllSkills" resultType="org.expertdatabase.entities.Skill$TempInnerSkill">
+   		SELECT * FROM exp_skills ORDER BY skill_id
+   </select>
+   
+   <select id="countExperts" resultType="Integer">
+   		SELECT count(*) FROM exp_expert_info
+   </select>
+   
+   <select id="countSkill" resultType="Integer">
+   		SELECT count(*) FROM exp_skills
+   </select>
+   
+   <select id="countLanguage" resultType="Integer">
+   		SELECT count(*) FROM exp_languages
+   </select>
+   
+   <select id="countCategory" resultType="Integer">
+   		SELECT count(*) FROM exp_skill_category
+   </select>
+   
+   <select id="countPosition" resultType="Integer">
+   		SELECT count(*) FROM exp_positions
+   </select>
+   
+   <select id="countLocation" resultType="Integer">
+   		SELECT count(*) FROM exp_locations
+   </select>
+   
+   <select id="findDocumentURLById" resultType="String" parameterType="Integer">
+   		SELECT document_url FROM exp_expert_document
+   		WHERE document_id=#{documentId}   
+   </select>
+   
+   <select id="findProfileImageById" resultType="String" parameterType="Integer">
+   		SELECT expert_image_url FROM exp_expert_info
+   		WHERE expert_id=#{expertId}
+   </select>
+   
+ </mapper>

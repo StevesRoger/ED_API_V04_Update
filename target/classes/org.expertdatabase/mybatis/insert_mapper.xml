@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+<mapper namespace="org.expertdatabase.repositories.AddExpertRepository">
+	
+	<insert id="addLanguage" parameterType="org.expertdatabase.entities.input.AddLanguage">
+		INSERT INTO exp_languages (language_status) VALUES(#{status})
+	</insert>	
+	
+	<insert id="addPosition" parameterType="org.expertdatabase.entities.input.AddPosition">
+		INSERT INTO exp_positions (position_status) VALUES(#{status})
+	</insert>
+	
+	<insert id="addLocation" parameterType="org.expertdatabase.entities.input.AddLocation">
+		INSERT INTO exp_locations (location_status,location_description)
+		VALUES(#{status},#{description})
+	</insert>
+	
+	<insert id="addLevel" parameterType="org.expertdatabase.entities.input.AddLevel">
+		INSERT INTO exp_levels (level_status,level_range)
+		VALUES(#{status},#{range})
+	</insert>
+	
+	<insert id="addSkill" parameterType="org.expertdatabase.entities.input.AddSkill">
+		INSERT INTO exp_skills (skill_status,category_id) VALUES(#{status},#{categoryId})
+	</insert>
+	
+	<insert id="addSkillCategory" parameterType="org.expertdatabase.entities.input.AddCategory">
+		    INSERT INTO exp_skill_category (category_status,category_description) 
+			VALUES (#{status},#{description})
+	</insert>
+	
+	<insert	id="addExpert" parameterType="org.expertdatabase.entities.input.AddExpert"
+		useGeneratedKeys="true" keyProperty="expertId" keyColumn="expert_id">
+			INSERT INTO exp_expert_info (
+				expert_full_name,
+				expert_gender,
+				expert_date_of_birth,
+				expert_current_work,
+				expert_salary,
+				expert_interest,
+				expert_year_experience,
+				expert_image_url,
+				location_id)
+			VALUES(#{expFullName},
+					#{expGender},
+					#{expDob},
+					#{expCurrentWork},
+					#{expSalary},
+					#{expInterest},
+					#{expYearExperience},
+					#{expImageURL},
+					#{locationId})
+	</insert>
+		
+	<insert id="addExpertAddress" parameterType="map">
+		INSERT INTO exp_expert_permanent_address 
+		VALUES(#{expertId},
+				#{address.commune},
+				#{address.district},
+				#{address.city},
+				#{address.country},
+				#{address.street})
+	</insert>
+	
+ 	<insert id="addExpertContacts" parameterType="map">
+		 INSERT INTO exp_expert_contact (
+				expert_email,
+				expert_phone,
+				expert_linked_in,
+				expert_website,
+				expert_id)
+		VALUES
+				<foreach item="item" collection="contacts" separator=",">
+		   		 (#{item.email}, #{item.phone}, #{item.linkedIn}, #{item.website}, #{expertId})
+		   		</foreach>
+	</insert>
+	
+    <insert id="addExpertEducations" parameterType="map">
+		INSERT INTO exp_expert_education(
+			graduate_status,
+			graduated_date,
+			education_description,
+			expert_id)
+		VALUES
+			 	<foreach item="item" collection="educations" separator=",">
+           		  (#{item.status},#{item.graduatedDate},#{item.description},#{expertId})
+        		</foreach>
+	</insert> 
+	
+    <insert id="addExpertDocuments" parameterType="map">
+		INSERT INTO exp_expert_document(
+			document_status,
+			document_url,
+			document_description,
+			document_state,
+			expert_id)
+		VALUES
+			 	<foreach item="item" collection="documents" separator=",">
+           		  (#{item.status}, #{item.url}, #{item.description}, #{item.state}, #{expertId})
+        		</foreach>
+	</insert> 
+	
+	<insert id="addExpertExperiences" parameterType="map">
+		INSERT INTO exp_expert_experience(
+			experience_status,
+			experience_year,
+			experience_description,
+			expert_id)
+		VALUES
+			 	<foreach item="item"  collection="experiences" separator="," >
+           		  (#{item.status}, #{item.year}, #{item.description}, #{expertId})
+        		</foreach>
+	</insert>
+	
+	<insert id="addExpertLanguages" parameterType="map">
+		INSERT INTO exp_expert_language(
+			expert_id,
+			language_id,
+			level_id)
+		VALUES
+			 	<foreach item="item" collection="languages" separator=",">
+           		 (#{expertId}, #{item.languageId}, #{item.levelId})
+        		</foreach>
+	</insert>
+	
+	<insert id="addExpertSkills" parameterType="map">
+		INSERT INTO exp_expert_skill(
+			expert_id,
+			skill_id,
+			level_id)
+		VALUES
+			 	<foreach item="item" collection="skills" separator=",">
+			 	(#{expertId}, #{item.skillId}, #{item.levelId})
+        		</foreach>
+	</insert>
+	
+	<insert id="addExpertPositions" parameterType="map">
+		INSERT INTO exp_expert_position(
+			expert_id,
+			position_id)
+		VALUES
+			 	<foreach item="item" collection="positionIds" separator=",">
+           		 (#{expertId}, #{item})
+        		</foreach>
+	</insert> 
+
+</mapper>

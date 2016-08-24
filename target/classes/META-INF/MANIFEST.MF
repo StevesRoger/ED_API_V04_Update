@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: ED_API_V04
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: Winter Solider
+Implementation-Vendor-Id: expert_database
+Build-Jdk: 1.8.0_101
+Implementation-URL: http://projects.spring.io/spring-boot/expert_datab
+ ase/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+

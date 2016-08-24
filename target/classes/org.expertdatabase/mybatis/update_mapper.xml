@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+ <mapper namespace="org.expertdatabase.repositories.UpdateExpertRepository">   
+	
+	<update	id="updateExpert" parameterType="map">
+		  UPDATE exp_expert_info 
+				SET 
+				expert_full_name=#{expert.expFullName},
+				expert_gender=#{expert.expGender},
+				expert_date_of_birth=#{expert.expDob},
+				expert_current_work=#{expert.expCurrentWork},
+				expert_salary=#{expert.expSalary},
+				expert_interest=#{expert.expInterest},
+				expert_year_experience=#{expert.expYearExperience},
+				expert_image_url=#{expert.expImageURL},
+				location_id=#{expert.locationId}
+			WHERE expert_id=#{expertId}
+	</update>
+		
+	<update id="updateExpertAddress" parameterType="map">
+		UPDATE exp_expert_permanent_address 
+		SET expert_commune=#{address.commune},
+			expert_district=#{address.district},
+			expert_city=#{address.city},
+			expert_country=#{address.country},
+			expert_street=#{address.street}
+		WHERE expert_id=#{expertId}
+	</update>
+	
+ 	<update id="updateExpertContacts" parameterType="map">
+ 		<foreach item="item" collection="contacts" separator=";">
+ 		 UPDATE exp_expert_contact 
+			SET	expert_email=#{item.email},
+				expert_phone=#{item.phone},
+				expert_linked_in=#{item.linkedIn},
+				expert_website=#{item.website}
+		 WHERE expert_id=#{expertId} AND contact_id=#{item.contact_id}	
+		 </foreach>
+	</update>
+	
+    <update id="updateExpertEducations" parameterType="map">
+    	<foreach item="item" collection="educations" separator=";">
+   		UPDATE exp_expert_education
+			SET	graduate_status=#{item.status},
+				graduated_date=#{item.graduatedDate},
+				education_description=#{item.description}
+			WHERE expert_id=#{expertId} AND education_id=#{item.education_id}
+		</foreach>  
+	</update> 
+	
+    <update id="updateExpertDocuments" parameterType="map">
+       <foreach item="item" collection="documents" separator=";">
+		UPDATE exp_expert_document
+			SET	document_status=#{item.status},
+				document_url=#{item.url},
+				document_description=#{item.description},
+				document_state=#{item.state}
+			WHERE expert_id=#{expertId} AND document_id=#{item.document_id}
+		</foreach>
+	</update> 
+	
+	<update id="updateExpertExperiences" parameterType="map">
+		<foreach item="item" collection="experiences" separator=";">
+		UPDATE exp_expert_experience
+			SET	experience_status=#{item.status}, 
+				experience_year=#{item.year},
+				experience_description=#{item.description}
+			WHERE expert_id=#{expertId} AND experience_id=#{item.experience_id}
+		</foreach>		
+	</update>
+	
+	<update id="updateExpertLanguages" parameterType="map">
+		<foreach item="item" collection="languages" separator=";">
+		UPDATE exp_expert_language
+			SET	language_id=#{item.new_id},
+				level_id=#{item.levelId}
+			WHERE expert_id=#{expertId} AND language_id=#{item.old_id}	
+		</foreach>	
+	</update>
+	
+	<update id="updateExpertSkills" parameterType="map">
+		<foreach item="item" collection="skills" separator=";">
+		UPDATE exp_expert_skill
+			SET	skill_id=#{item.new_id},
+				level_id=#{item.levelId}
+			WHERE expert_id=#{expertId} AND skill_id=#{item.old_id}
+		</foreach>
+	</update>
+	
+	<update id="updateExpertPositions" parameterType="map">
+		<foreach item="item" collection="positions" separator=";">
+		UPDATE exp_expert_position
+			SET	position_id=#{item.new_id}
+			WHERE expert_id=#{expertId} AND position_id=#{item.old_id}
+		</foreach>
+	</update>
+	
+	<update id="updateLanguage" parameterType="org.expertdatabase.entities.input.AddLanguage$UpdateLanguage">
+		UPDATE exp_languages SET language_status=#{status} WHERE language_id=#{id}
+	</update> 
+ 	
+ 	<update id="updateLocation" parameterType="org.expertdatabase.entities.input.AddLocation$UpdateLocation">
+ 		UPDATE exp_locations SET location_status=#{status},location_description=#{description} 
+ 		WHERE location_id=#{id} AND location_state IS NOT FALSE
+ 	</update>
+ 	
+ 	<update id="updatePosition" parameterType="org.expertdatabase.entities.input.AddPosition$UpdatePosition">
+ 		UPDATE exp_positions SET position_status=#{status} WHERE position_id=#{id}
+ 	</update>
+ 	
+ 	<update id="updateSkill" parameterType="org.expertdatabase.entities.input.AddSkill$UpdateSkill">
+ 		UPDATE exp_skills SET skill_status=#{status} WHERE skill_id=#{id}
+ 	</update>
+ 	
+ 	<update id="updateSkillCategory" parameterType="org.expertdatabase.entities.input.AddCategory$UpdateCategory">
+ 		UPDATE exp_skill_category SET category_status=#{status},category_description=#{description} 
+ 		WHERE category_id=#{id}
+ 	</update>
+ 	 	
+ 	<update id="updateLevel" parameterType="org.expertdatabase.entities.input.AddLevel$UpdateLevel">
+ 		UPDATE exp_levels SET level_status=#{status},level_range=#{range} WHERE level_id=#{id}
+ 	</update>
+ 	
+ 	<update id="changeLocationState" parameterType="map">
+ 		UPDATE exp_locations SET location_state=#{state} WHERE location_id=#{locationId}
+ 	</update>
+ 	
+ </mapper>

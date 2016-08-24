@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+ 
+ <mapper namespace="org.expertdatabase.repositories.AdminRepository">   
+
+	 <resultMap type="org.expertdatabase.entities.admin.Admin" id="ResultAdmin">
+	 	
+	 	<result property="admin_id" column="admin_id"/>
+   		<association property="role" column="role_id" 
+ 					javaType="org.expertdatabase.entities.admin.Role"        
+ 					select="selectRoleByAdminId" />  
+ 					
+   		<collection property="contacts" column="admin_id" javaType="ArrayList"        
+     				ofType="org.expertdatabase.entities.admin.AdminContact"
+     				select="selectContactByAdminId"/>
+   </resultMap>
+   
+   <select id="getAdmins" resultMap="ResultAdmin">
+   		SELECT * FROM exp_admin_info ORDER BY admin_id
+   </select>
+   
+   <select id="selectRoleByAdminId" resultType="org.expertdatabase.entities.admin.Role">
+   		SELECT * FROM exp_admin_role WHERE role_id=#{role_id}
+   </select>
+   
+   <select id="selectContactByAdminId" resultType="org.expertdatabase.entities.admin.AdminContact">
+   		SELECT * FROM exp_admin_contact WHERE admin_id=#{admin_id}
+   </select>
+   
+   <select id="getRoles" resultType="org.expertdatabase.entities.admin.Role">
+   		SELECT * FROM exp_admin_role ORDER BY role_id
+   </select>
+   
+   <update id="changeStateExpert" parameterType="map">
+   		UPDATE exp_expert_info SET expert_state=#{state} WHERE expert_id=#{expertId}
+   </update>
+   
+   <insert id="addAdmin" parameterType="org.expertdatabase.entities.admin.input.AddAdmin"
+   useGeneratedKeys="true" keyProperty="id" keyColumn="admin_id">
+      	INSERT INTO public.exp_admin_info(profile_image_url, role_id, admin_name, password)
+    		VALUES (#{image}, #{roleId}, #{name}, #{password});
+   </insert>
+   
+   <insert id="addAdminContact" parameterType="map">
+   		
+   		INSERT INTO exp_admin_contact(email, phone_number, admin_id)
+    	VALUES 
+    	<foreach item="item" collection="contacts" separator=",">
+    		(#{item.email},#{item.phone_number},#{id})
+    	</foreach>
+    	
+
+   </insert>
+   
+   <select id="findAdminByNameAndPassword" resultMap="ResultAdmin"	parameterType="map">
+   		SELECT * FROM exp_admin_info WHERE admin_name=#{name} AND password=#{password}
+   </select>
+   
+ </mapper>

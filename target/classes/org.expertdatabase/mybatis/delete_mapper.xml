@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+ <mapper namespace="org.expertdatabase.repositories.DeleteExpertRepository">
+ 
+ 	<delete id="deleteLanguage" parameterType="Integer">
+ 		DELETE FROM exp_languages WHERE language_id=#{languageId};
+ 	</delete>
+	
+	<delete id="deletePosition" parameterType="Integer">
+		DELETE FROM exp_positions WHERE position_id=#{positionId};
+	</delete>
+	
+	<delete id="deleteSkill" parameterType="Integer">
+		DELETE FROM exp_skills WHERE skill_id=#{skillId};
+	</delete>
+	
+	<delete id="deleteSkillCategory" parameterType="Integer" >
+		DELETE FROM exp_skill_category WHERE category_id=#{categoryId};
+
+	</delete>
+	
+	<delete id="deleteLevel" parameterType="Integer">
+		DELETE FROM exp_levels WHERE level_id=#{levelId}
+	</delete>
+ 
+ 	<delete id="deleteLocation" parameterType="Integer">
+ 		DELETE FROM exp_locations l
+ 		WHERE l.location_id=#{locationId}
+ 		AND NOT EXISTS
+ 		(SELECT exp.location_id FROM exp_expert_info exp 
+ 			WHERE exp.location_id=#{locationId})
+ 	</delete>
+ 	
+ 	<update id="changeStateLocation" parameterType="Integer">
+		UPDATE exp_locations SET location_state=false WHERE location_id=#{locationId}		
+	</update>
+ 	
+ 	<delete id="deleteExpert" parameterType="Integer">
+ 		DELETE FROM exp_expert_info WHERE expert_id=#{expertId}
+ 	</delete>
+ 	
+ 	<delete id="deleteExpertAddress" parameterType="map">
+ 		DELETE FROM exp_expert_permanent_address
+ 		WHERE expert_id=#{expertId}
+ 	</delete>
+
+	<delete id="deleteExpertContact" parameterType="map">
+		DELETE FROM exp_expert_contact
+		WHERE expert_id=#{expertId} AND contact_id=#{contactId}
+	</delete>
+	
+	<delete id="deleteExpertEducation" parameterType="map">
+		DELETE FROM exp_expert_education
+		WHERE expert_id=#{expertId} AND education_id=#{educationId}
+	</delete>
+	
+	<delete id="deleteExpertDocument" parameterType="map">
+		DELETE FROM exp_expert_document
+		WHERE expert_id=#{expertId} AND document_id=#{documentId}
+	</delete>
+	
+	<delete id="deleteExpertExperience" parameterType="map">
+		DELETE FROM exp_expert_experience
+		WHERE expert_id=#{expertId} AND experience_id=#{experienceId}
+	</delete>
+	
+	<delete id="deleteExpertLanguage" parameterType="map">
+		DELETE FROM exp_expert_language
+		WHERE expert_id=#{expertId} AND language_id=#{languageId}
+	</delete>
+	
+	<delete id="deleteExpertSkill" parameterType="map">
+		DELETE FROM exp_expert_skill
+		WHERE expert_id=#{expertId} AND skill_id=#{skillId}
+	</delete>
+	
+	<delete id="deleteExpertPosition" parameterType="map">
+		DELETE FROM exp_expert_position
+		WHERE expert_id=#expertId} AND position_id=#{positionId}
+	</delete>
+ 	
+ </mapper>
